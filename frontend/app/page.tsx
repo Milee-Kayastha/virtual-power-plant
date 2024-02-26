@@ -1,6 +1,7 @@
 "use client";
 import { deleteBattery, getBatteries } from "@/api/api";
 import BatteryForm from "@/components/BatteryForm";
+import SearchFilter from "@/components/SearchFilter";
 import StatCard from "@/components/StatCard";
 import { Battery } from "@/utils/interface";
 import { Popconfirm, Table, message } from "antd";
@@ -74,10 +75,18 @@ export default function Home() {
     }
   };
 
-  const getAllBatteries = async () => {
+  const getAllBatteries = async (
+    startPostcode: string = "",
+    endPostcode: string = "",
+    searchByName: string = ""
+  ) => {
     setIsLoading(true);
     try {
-      const response = await getBatteries();
+      const response = await getBatteries(
+        startPostcode,
+        endPostcode,
+        searchByName
+      );
       setBatteries(response?.batteries);
       setTotalWattCapacity(response?.totalWattCapacity);
       setAverageWattCapacity(response?.averageWattCapacity);
@@ -105,7 +114,7 @@ export default function Home() {
             Statistics
           </h3>
           <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-            {isLoading ? (
+            {isLoading || (!totalWattCapacity && !averageWattCapacity) ? (
               <>
                 <div className="animate-pulse w-full h-[108px] bg-gray-100 rounded"></div>
                 <div className="animate-pulse w-full h-[108px] bg-gray-100 rounded"></div>
@@ -128,10 +137,11 @@ export default function Home() {
             )}
           </div>
         </div>
-        <div className="flex justify-end my-8">
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-4 sm:items-center my-8">
+          <SearchFilter getAllBatteries={getAllBatteries} />
           <button
             type="button"
-            className="rounded-md bg-blue-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-600"
+            className="rounded-md w-fit bg-blue-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-600"
             onClick={() => setOpenBatteryForm(true)}
           >
             Add Battery

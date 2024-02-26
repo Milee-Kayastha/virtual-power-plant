@@ -1,16 +1,20 @@
 import { backend_url } from "@/config";
 import axios from "axios";
 
-export let getBatteries = async () => {
+export let getBatteries = async (
+  startPostcode: string,
+  endPostcode: string,
+  searchByName: string
+) => {
   try {
+    let filter = searchByName ? { name: searchByName } : {};
     const response = await axios.get(backend_url + `battery`, {
       params: {
-        startPostcode: "",
-        endPostcode: "",
-        filter: {},
+        startPostcode: startPostcode ?? "",
+        endPostcode: endPostcode ?? "",
+        filter: filter,
       },
     });
-    console.log("res", response);
     return response.data;
   } catch (error) {
     throw error;

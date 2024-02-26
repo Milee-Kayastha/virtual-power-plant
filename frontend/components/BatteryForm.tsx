@@ -19,7 +19,6 @@ const BatteryForm = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("check", battery, batteryData);
     if (formType === "Add") {
       addBattery();
     } else {
