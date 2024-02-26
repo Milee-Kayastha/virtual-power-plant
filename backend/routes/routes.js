@@ -1,8 +1,9 @@
 import express from "express";
-import { createBattery } from "../controllers/batteryController";
+import { createBattery, getBatteries } from "../controllers/batteryController.js";
 
 const router = express.Router();
 
-router.post('/batteries', createBattery);
+router.post("/", createBattery);
+router.get("/", getBatteries);
 
 export default router;

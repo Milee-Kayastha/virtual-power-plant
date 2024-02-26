@@ -1,16 +1,20 @@
 import cors from "cors";
-import { config } from 'dotenv';
+import { config } from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
+import batteryRoute from "./routes/routes.js";
+import bodyParser from "body-parser";
 config();
-
 
 const app = express();
 const PORT = 4000;
 const MONGO_URL = process.env.MONGO_URL;
 
 app.use(cors());
+app.use(bodyParser.json());
 app.use(express.json());
+
+app.use("/battery", batteryRoute);
 
 mongoose
   .connect(MONGO_URL)
