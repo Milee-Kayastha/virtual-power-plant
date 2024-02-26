@@ -40,4 +40,11 @@ export const updateBattery = async (
   }
 };
 
-
+export const deleteBattery = async (batteryId: string) => {
+  try {
+    const response = await axios.delete(backend_url + `battery/${batteryId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

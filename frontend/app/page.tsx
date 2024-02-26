@@ -1,5 +1,5 @@
 "use client";
-import { getBatteries } from "@/api/api";
+import { deleteBattery, getBatteries } from "@/api/api";
 import BatteryForm from "@/components/BatteryForm";
 import StatCard from "@/components/StatCard";
 import { Battery } from "@/utils/interface";
@@ -65,7 +65,13 @@ export default function Home() {
   ];
 
   const onDeleteBattery = async (id: string) => {
- 
+    try {
+      const response = await deleteBattery(id);
+      message.success(response.message);
+      getAllBatteries();
+    } catch (error: any) {
+      message.error(error.message);
+    }
   };
 
   const getAllBatteries = async () => {
