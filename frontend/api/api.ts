@@ -24,3 +24,20 @@ export const createBattery = async (batteryData: any) => {
     throw error;
   }
 };
+
+export const updateBattery = async (
+  batteryId: string,
+  updatedBatteryData: any
+) => {
+  try {
+    const response = await axios.put(
+      backend_url + `battery/${batteryId}`,
+      updatedBatteryData
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
