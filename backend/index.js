@@ -3,16 +3,15 @@ import { config } from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import batteryRoute from "./routes/routes.js";
-import bodyParser from "body-parser";
 config();
 
 const app = express();
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 const MONGO_URL = process.env.MONGO_URL;
 
 app.use(cors());
-app.use(bodyParser.json());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/battery", batteryRoute);
 

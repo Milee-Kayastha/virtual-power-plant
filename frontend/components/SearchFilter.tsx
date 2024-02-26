@@ -53,9 +53,6 @@ const SearchFilter = ({ getAllBatteries }: any) => {
           value={batteryName}
           onChange={(e) => {
             setBatteryName(e.target.value);
-            if (!e.target.value) {
-              getAllBatteries();
-            }
           }}
           autoComplete="off"
         />
