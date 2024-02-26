@@ -10,6 +10,11 @@ export interface BatteryFormProps {
   onClose: () => void;
   getAllBatteries: () => void;
 }
+export interface StatisticsProps {
+  isLoading: boolean;
+  totalWattCapacity: string;
+  averageWattCapacity: string;
+}
 
 export interface StatCardProps {
   title: string;

@@ -2,7 +2,7 @@
 import { deleteBattery, getBatteries } from "@/api/api";
 import BatteryForm from "@/components/BatteryForm";
 import SearchFilter from "@/components/SearchFilter";
-import StatCard from "@/components/StatCard";
+import Statistics from "@/components/Statistics";
 import { Battery } from "@/utils/interface";
 import { Popconfirm, Table, message } from "antd";
 import { useEffect, useState } from "react";
@@ -109,34 +109,11 @@ export default function Home() {
   return (
     <main className="mx-auto max-w-7xl px-4">
       <div className="mt-8">
-        <div>
-          <h3 className="text-base font-semibold leading-6 text-gray-900">
-            Statistics
-          </h3>
-          <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-            {isLoading || (!totalWattCapacity && !averageWattCapacity) ? (
-              <>
-                <div className="animate-pulse w-full h-[108px] bg-gray-100 rounded"></div>
-                <div className="animate-pulse w-full h-[108px] bg-gray-100 rounded"></div>
-              </>
-            ) : (
-              <>
-                {totalWattCapacity && (
-                  <StatCard
-                    title={"Total Watt Capacity"}
-                    data={totalWattCapacity + " W"}
-                  />
-                )}
-                {averageWattCapacity && (
-                  <StatCard
-                    title={"Average Watt Capacity"}
-                    data={parseFloat(averageWattCapacity).toFixed(2) + " W"}
-                  />
-                )}
-              </>
-            )}
-          </div>
-        </div>
+        <Statistics
+          isLoading={isLoading}
+          totalWattCapacity={totalWattCapacity}
+          averageWattCapacity={averageWattCapacity}
+        />
         <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-4 sm:items-center my-8">
           <SearchFilter getAllBatteries={getAllBatteries} />
           <button
