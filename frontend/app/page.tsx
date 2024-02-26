@@ -1,14 +1,10 @@
 "use client";
 import { getBatteries } from "@/api/api";
 import BatteryForm from "@/components/BatteryForm";
-import { Button, message } from "antd";
+import StatCard from "@/components/StatCard";
+import { Battery } from "@/utils/interface";
+import { Popconfirm, Table, message } from "antd";
 import { useEffect, useState } from "react";
-
-interface Battery {
-  name: string;
-  postcode: string;
-  wattCapacity: string;
-}
 
 export default function Home() {
   const [openBatteryForm, setOpenBatteryForm] = useState<boolean>(false);
@@ -17,16 +13,78 @@ export default function Home() {
     useState<Battery | null>(null);
   const [totalWattCapacity, setTotalWattCapacity] = useState("");
   const [averageWattCapacity, setAverageWattCapacity] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const columns = [
+    {
+      title: "Battery Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Postcode",
+      dataIndex: "postcode",
+      key: "postcode",
+    },
+    {
+      title: "Watt Capacity",
+      dataIndex: "wattCapacity",
+      key: "wattCapacity",
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (data: any) => (
+        <div className="flex gap-4 text-blue-700 ">
+          <button
+            className="hover:underline"
+            type="button"
+            onClick={() => {
+              setBatteryDataToBeEdited(data);
+              setOpenBatteryForm(true);
+            }}
+          >
+            Edit
+          </button>
+          <Popconfirm
+            title="Delete the battery"
+            description="Are you sure to delete this battery?"
+            onConfirm={() => onDeleteBattery(data?._id)}
+            okText="Delete"
+            cancelText="Cancel"
+            okButtonProps={{
+              style: { backgroundColor: "#1e40af", color: "white" },
+            }}
+          >
+            <button className="hover:underline" type="button">
+              Delete
+            </button>
+          </Popconfirm>
+        </div>
+      ),
+    },
+  ];
+
+  const onDeleteBattery = async (id: string) => {
+ 
+  };
 
   const getAllBatteries = async () => {
+    setIsLoading(true);
     try {
       const response = await getBatteries();
       setBatteries(response?.batteries);
       setTotalWattCapacity(response?.totalWattCapacity);
       setAverageWattCapacity(response?.averageWattCapacity);
-    } catch (error) {
-      // message.error(error);
+      setIsLoading(false);
+    } catch (error: any) {
+      setIsLoading(false);
+      message.error(error.message);
     }
+  };
+
+  const onCloseBatteryForm = () => {
+    setOpenBatteryForm(false);
+    setBatteryDataToBeEdited(null);
   };
 
   useEffect(() => {
@@ -34,29 +92,59 @@ export default function Home() {
   }, []);
 
   return (
-    <main>
-      <div>
-        <Button type="primary" onClick={() => setOpenBatteryForm(true)}>
-          Add Battery
-        </Button>
+    <main className="mx-auto max-w-7xl px-4">
+      <div className="mt-8">
         <div>
-          <h2>Battery List</h2>
-          <ul>
-            {batteries.map((battery, index) => (
-              <li key={index}>
-                {battery.name} - {battery.postcode} - {battery.wattCapacity}{" "}
-                watts
-              </li>
-            ))}
-          </ul>
-          <h3>Total Watt Capacity: {totalWattCapacity}</h3>
-          <h3>Average Watt Capacity: {averageWattCapacity}</h3>
+          <h3 className="text-base font-semibold leading-6 text-gray-900">
+            Statistics
+          </h3>
+          <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+            {isLoading ? (
+              <>
+                <div className="animate-pulse w-full h-[108px] bg-gray-100 rounded"></div>
+                <div className="animate-pulse w-full h-[108px] bg-gray-100 rounded"></div>
+              </>
+            ) : (
+              <>
+                {totalWattCapacity && (
+                  <StatCard
+                    title={"Total Watt Capacity"}
+                    data={totalWattCapacity + " W"}
+                  />
+                )}
+                {averageWattCapacity && (
+                  <StatCard
+                    title={"Average Watt Capacity"}
+                    data={parseFloat(averageWattCapacity).toFixed(2) + " W"}
+                  />
+                )}
+              </>
+            )}
+          </div>
         </div>
+        <div className="flex justify-end my-8">
+          <button
+            type="button"
+            className="rounded-md bg-blue-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-600"
+            onClick={() => setOpenBatteryForm(true)}
+          >
+            Add Battery
+          </button>
+        </div>
+        <Table
+          dataSource={batteries}
+          columns={columns}
+          loading={isLoading}
+          pagination={{
+            defaultPageSize: 10,
+          }}
+        />
         {openBatteryForm && (
           <BatteryForm
             batteryData={batteryDataToBeEdited}
             isOpen={openBatteryForm}
-            onClose={() => setOpenBatteryForm(false)}
+            onClose={onCloseBatteryForm}
+            getAllBatteries={getAllBatteries}
           />
         )}
       </div>
