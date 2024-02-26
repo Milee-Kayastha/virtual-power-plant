@@ -1,4 +1,5 @@
 "use client";
+import { createBattery } from "@/api/api";
 import { Modal } from "antd";
 import React, { useState } from "react";
 
@@ -28,7 +29,14 @@ const BatteryForm = ({ batteryData, isOpen, onClose }: BatteryFormProps) => {
   };
 
   const addBattery = async () => {
-    
+    try {
+      const addedBattery = await createBattery(battery);
+      console.log("Battery added successfully:", addedBattery);
+      // Handle any further logic, such as updating state or displaying a success message
+    } catch (error) {
+      console.error("Failed to add battery:", error);
+      // Handle error, such as displaying an error message to the user
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
